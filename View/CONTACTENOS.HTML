@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="CSS/Contactenos.css">
+    <link rel="icon" href="IMAGENES/viajar.png" type="image/x-icon">
+    <script src="/Model/JS/validaciones.js"></script>
+    <title>Contactanos</title>
+</head>
+<body>
+    <a href="INICIO.HTML">
+        <img src="IMAGENES/icons8-entrar-redondeado-50 (1).png" alt="Logo" class="logo">
+    </a>
+
+    <div class="contact-container">
+        <div class="left-side"></div>
+        <form id="contactForm" action="procesar_contacto.php" class="right-side">
+            <h2>Contactanos</h2>
+            <div class="input_group">
+                <label for="name">Nombre</label>
+                <input type="text" name="name" id="name" placeholder="Nombre">
+
+                <label for="phone">Telefono</label>
+                <input type="tel" name="phone" id="phone" placeholder="Telefono">
+
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" placeholder="email">
+
+                <label for="message">Mensaje</label>
+                <textarea name="message" id="message" cols="30" rows="5" placeholder="mensaje"></textarea>
+            </div>
+            <input class="btn" type="submit" value="Enviar">
+        </form>
+    </div>
+
+    <!-- Incluir el archivo JavaScript -->
+    
+</body>
+</html>

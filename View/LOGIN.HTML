@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="LOGIN.CSS">
+    <script src="/Model/JS/login.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+    <!-- Login Form -->
+    <div id="loginForm" class="login-container">
+        <div class="login-header">
+            <h1>🎓 English on the fly</h1>
+            <p>Sistema de Gestión Educativa</p>
+        </div>
+
+        <div id="errorMessage" class="alert alert-error"></div>
+        <div id="successMessage" class="alert alert-success"></div>
+
+        <form id="loginFormElement">
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+        </form>
+
+        <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 10px; font-size: 12px;">
+            <strong>Usuarios de prueba:</strong><br>
+            Admin: admin / password<br>
+            Profesor: profesor1 / password<br>
+            Estudiante: estudiante1 / password
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <div class="dashboard-header">
+            <div class="user-welcome">
+                <h2 id="welcomeMessage">¡Hola, Usuario!</h2>
+                <span id="userRole">Rol</span>
+            </div>
+            <div class="user-info">
+                <span id="roleBadge" class="role-badge">USUARIO</span>
+                <button onclick="logout()" class="logout-btn">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <div class="dashboard-body">
+            <div class="sidebar">
+                <div id="navigationMenu"></div>
+            </div>
+
+            <div class="content-area">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-section active">
+                    <div id="statsGrid" class="stats-grid"></div>
+                    <div id="dashboardContent"></div>
+                </div>
+
+                <!-- Users Section (Admin only) -->
+                <div id="usuarios-section" class="content-section">
+                    <h2>Gestión de Usuarios</h2>
+                    <div style="margin: 20px 0;">
+                        <button onclick="openUserModal()" class="btn btn-primary">+ Nuevo Usuario</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Courses Section (Admin/Teacher) -->
+                <div id="cursos-section" class="content-section">
+                    <h2 id="coursesTitle">Mis Cursos</h2>
+                    <div style="margin: 20px 0;">
+                        <button onclick="openCourseModal()" class="btn btn-success">+ Nuevo Curso</button>
+                    </div>
+                    <div id="coursesContainer"></div>
+                </div>
+
+                <!-- Grades Section (Teacher/Student) -->
+                <div id="calificaciones-section" class="content-section">
+                    <h2 id="gradesTitle">Calificaciones</h2>
+                    <div style="margin: 20px 0;" id="gradesActions">
+                        <button onclick="openGradeModal()" class="btn btn-primary">+ Nueva Calificación</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="gradesTable">
+                            <thead>
+                                <tr id="gradesTableHeader">
+                                    <th>Estudiante</th>
+                                    <th>Curso</th>
+                                    <th>Actividad</th>
+                                    <th>Calificación</th>
+                                    <th>Fecha</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tasks Section (Teacher/Student) -->
+                <div id="tareas-section" class="content-section">
+                    <h2 id="tasksTitle">Tareas</h2>
+                    <div style="margin: 20px 0;" id="tasksActions">
+                        <button onclick="openTaskModal()" class="btn btn-success">+ Nueva Tarea</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="tasksTable">
+                            <thead>
+                                <tr id="tasksTableHeader">
+                                    <th>Título</th>
+                                    <th>Curso</th>
+                                    <th>Fecha Límite</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Reports Section -->
+                <div id="reportes-section" class="content-section">
+                    <h3>📈 Reportes del Sistema</h3>
+                   <ul style="list-style: none; padding: 0; font-size: 16px;">
+                        <li>👥 Total de Usuarios: <strong id="totalUsersReport">0</strong></li>
+                        <li>👨‍🏫 Profesores: <strong id="totalTeachersReport">0</strong></li>
+                        <li>🎓 Estudiantes: <strong id="totalStudentsReport">0</strong></li>
+                    </ul>
+                </div>
+
+                <!-- My Courses Section (Student) -->
+                <div id="mis-cursos-section" class="content-section">
+                    <h2>Mis Cursos</h2>
+                    <div id="studentCoursesContainer"></div>
+                </div>
+
+                <!-- Progress Section (Student) -->
+                <div id="progreso-section" class="content-section">
+                    <h2>Mi Progreso</h2>
+                    <div id="progressContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Modal -->
+<div id="userModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeUserModal()">&times;</span>
+        <h2 id="modalTitle">Nuevo Usuario</h2>
+        <form id="userForm">
+            <input type="hidden" id="userId" name="userId">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="modalUsername">Usuario:</label>
+                    <input type="text" id="modalUsername" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="modalNombre">Nombre:</label>
+                    <input type="text" id="modalNombre" name="nombre" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="modalEmail">Email:</label>
+                <input type="email" id="modalEmail" name="email" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="modalRol">Rol:</label>
+                    <select id="modalRol" name="rol" required>
+                        <option value="">Seleccionar rol</option>
+                        <option value="administrador">Administrador</option>
+                        <option value="profesor">Profesor</option>
+                        <option value="estudiante">Estudiante</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modalPassword">Contraseña:</label>
+                    <input type="password" id="modalPassword" name="password">
+                </div>
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="closeUserModal()" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Course Modal -->
+<div id="courseModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeCourseModal()">&times;</span>
+        <h2 id="modalCourseTitle">Nuevo Curso</h2>
+        <form id="courseForm">
+            <input type="hidden" id="courseId" name="courseId">
+            <div class="form-group">
+                <label for="courseName">Nombre del Curso:</label>
+                <input type="text" id="courseName" name="courseName" required>
+            </div>
+            <div class="form-group">
+                <label for="courseCode">Código del Curso:</label>
+                <input type="text" id="courseCode" name="courseCode" required>
+            </div>
+            <div class="form-group">
+                <label for="courseDescription">Descripción:</label>
+                <textarea id="courseDescription" name="courseDescription" required></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="courseLevel">Nivel:</label>
+                    <select id="courseLevel" name="courseLevel" required>
+                        <option value="">Seleccionar nivel</option>
+                        <option value="Beginner">Principiante</option>
+                        <option value="Intermediate">Intermedio</option>
+                        <option value="Advanced">Avanzado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="courseDuration">Duración (semanas):</label>
+                    <input type="number" id="courseDuration" name="courseDuration" min="1" max="52" required>
+                </div>
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="closeCourseModal()" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Grade Modal -->
+<div id="gradeModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeGradeModal()">&times;</span>
+        <h2 id="modalGradeTitle">Nueva Calificación</h2>
+        <form id="gradeForm">
+            <input type="hidden" id="gradeId" name="gradeId">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="gradeStudent">Estudiante:</label>
+                    <select id="gradeStudent" name="gradeStudent" required>
+                        <option value="">Seleccionar estudiante</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="gradeCourse">Curso:</label>
+                    <select id="gradeCourse" name="gradeCourse" required>
+                        <option value="">Seleccionar curso</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="gradeActivity">Actividad:</label>
+                <input type="text" id="gradeActivity" name="gradeActivity" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="gradeScore">Calificación:</label>
+                    <input type="number" id="gradeScore" name="gradeScore" min="0" max="100" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="gradeDate">Fecha:</label>
+                    <input type="date" id="gradeDate" name="gradeDate" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="gradeComments">Comentarios:</label>
+                <textarea id="gradeComments" name="gradeComments"></textarea>
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="closeGradeModal()" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Task Modal -->
+<div id="taskModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeTaskModal()">&times;</span>
+        <h2 id="modalTaskTitle">Nueva Tarea</h2>
+        <form id="taskForm">
+            <input type="hidden" id="taskId" name="taskId">
+            <div class="form-group">
+                <label for="taskTitle">Título:</label>
+                <input type="text" id="taskTitle" name="taskTitle" required>
+            </div>
+            <div class="form-group">
+                <label for="taskCourse">Curso:</label>
+                <select id="taskCourse" name="taskCourse" required>
+                    <option value="">Seleccionar curso</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="taskDescription">Descripción:</label>
+                <textarea id="taskDescription" name="taskDescription" required></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="taskDueDate">Fecha Límite:</label>
+                    <input type="datetime-local" id="taskDueDate" name="taskDueDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskType">Tipo:</label>
+                    <select id="taskType" name="taskType" required>
+                        <option value="">Seleccionar tipo</option>
+                        <option value="homework">Tarea</option>
+                        <option value="project">Proyecto</option>
+                        <option value="exam">Examen</option>
+                        <option value="quiz">Quiz</option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="closeTaskModal()" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>
+
+<!---<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="LOGIN.CSS">
+    <script src="/Model/JS/login.js"></script>
+    <title>LOGIN ENGLISH ON THE FLY</title>
+</head>
+<body>
+   <div class="container">
+   
+    <div id="loginForm" class="login-container">
+        <div class="login-header">
+            <h1>🎓 English on the fly</h1>
+            <p>Sistema de Gestión Educativa</p>
+        </div>
+
+        <div id="errorMessage" class="alert alert-error"></div>
+        <div id="successMessage" class="alert alert-success"></div>
+
+        <form id="loginFormElement">
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+        </form>
+
+        <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 10px; font-size: 12px;">
+            <strong>Usuarios de prueba:</strong><br>
+            Admin: admin / password<br>
+            Profesor: profesor1 / password<br>
+            Estudiante: estudiante1 / password
+        </div>
+    </div>
+
+    
+    <div id="dashboard" class="dashboard">
+        <div class="dashboard-header">
+            <div class="user-welcome">
+                <h2 id="welcomeMessage">¡Hola, Usuario!</h2>
+                <span id="userRole">Rol</span>
+            </div>
+            <div class="user-info">
+                <span id="roleBadge" class="role-badge">USUARIO</span>
+                <button onclick="logout()" class="logout-btn">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <div class="dashboard-body">
+            <div class="sidebar">
+                <div id="navigationMenu">
+                    <button onclick="showReportSection()" class="btn btn-warning">Ver Reportes</button>
+                </div>
+            </div>
+
+            <div class="content-area">
+                
+                <div id="dashboard-section" class="content-section active">
+                    <div id="statsGrid" class="stats-grid"></div>
+                    <div id="dashboardContent"></div>
+                </div>
+
+                
+                <div id="usuarios-section" class="content-section">
+                    <h2>Gestión de Usuarios</h2>
+                    <div style="margin: 20px 0;">
+                        <button onclick="openUserModal()" class="btn btn-primary">+ Nuevo Usuario</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                
+                <div id="cursos-section" class="content-section">
+                    <h2>Cursos</h2>
+                    <div style="margin: 20px 0;">
+                        <button onclick="openCourseModal()" class="btn btn-success">+ Nuevo Curso</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="coursesTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre del Curso</th>
+                                    <th>Descripción</th>
+                                    <th>Profesor</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                
+                <div id="calificaciones-section" class="content-section">
+                    <h2>Calificaciones</h2>
+                    <p>Sección de calificaciones en desarrollo...</p>
+                </div>
+
+               
+                <div id="tareas-section" class="content-section">
+                    <h2>Tareas</h2>
+                    <p>Sección de tareas en desarrollo...</p>
+                </div>
+
+               
+                <div id="reportSection" class="content-section">
+                    <h3>📈 Reportes del Sistema</h3>
+                   <ul style="list-style: none; padding: 0; font-size: 16px;">
+                        <li>👥 Total de Usuarios: <strong id="totalUsersReport">0</strong></li>
+                        <li>👨‍🏫 Profesores: <strong id="totalTeachersReport">0</strong></li>
+                        <li>🎓 Estudiantes: <strong id="totalStudentsReport">0</strong></li>
+                    </ul>
+                </div>
+
+                
+                <div id="mis-cursos-section" class="content-section">
+                    <h2>Mis Cursos</h2>
+                    <p>Sección de mis cursos en desarrollo...</p>
+                </div>
+
+                
+                <div id="progreso-section" class="content-section">
+                    <h2>Mi Progreso</h2>
+                    <p>Sección de progreso en desarrollo...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="userModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeUserModal()">&times;</span>
+        <h2 id="modalTitle">Nuevo Usuario</h2>
+        <form id="userForm">
+            <input type="hidden" id="userId" name="userId">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="modalUsername">Usuario:</label>
+                    <input type="text" id="modalUsername" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="modalNombre">Nombre:</label>
+                    <input type="text" id="modalNombre" name="nombre" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="modalEmail">Email:</label>
+                <input type="email" id="modalEmail" name="email" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="modalRol">Rol:</label>
+                    <select id="modalRol" name="rol" required>
+                        <option value="">Seleccionar rol</option>
+                        <option value="administrador">Administrador</option>
+                        <option value="profesor">Profesor</option>
+                        <option value="estudiante">Estudiante</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modalPassword">Contraseña:</label>
+                    <input type="password" id="modalPassword" name="password">
+                </div>
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="closeUserModal()" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div id="courseModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeCourseModal()">&times;</span>
+        <h2 id="modalCourseTitle">Nuevo Curso</h2>
+        <form id="courseForm">
+            <input type="hidden" id="courseId" name="courseId">
+            <div class="form-group">
+                <label for="courseName">Nombre del Curso:</label>
+                <input type="text" id="courseName" name="courseName" required>
+            </div>
+            <div class="form-group">
+                <label for="courseDescription">Descripción:</label>
+                <textarea id="courseDescription" name="courseDescription" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="courseTeacher">Profesor:</label>
+                <input type="text" id="courseTeacher" name="courseTeacher" required>
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="closeCourseModal()" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
